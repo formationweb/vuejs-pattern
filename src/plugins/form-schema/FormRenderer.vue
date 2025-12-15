@@ -6,29 +6,53 @@
             <component 
                 :is="getFieldComponent(field.type)" 
                 :label="field.label"
+                v-model="form[field.name]"
             />
+            <div v-show="errors[field.name]">
+                {{ errors[field.name] }}
+            </div>
         </div>
+        <slot>
+            <button>Valider</button>
+        </slot>
     </form>
 </template>
 
 <script setup lang="ts" generic="F extends readonly FieldSchema[]">
 import { fieldRegistry } from './fields/registry';
 import type { FieldSchema, FieldType, Schema } from './types';
+import { useSchemaForm } from './useSchemaForm';
+
+/**
+ * form: {
+ *   email: ref('...'),
+ *   password: ref('...')
+ * }
+ * 
+ * errors: {
+ *   email: ref('...'),
+ *   password: ref('...')
+ * }
+ */
 
 type SchemaFormData = {
     [K in F[number]["name"]]: string
 }
 
-defineProps<{
+const props = defineProps<{
     schema: Schema<F>
 }>()
 
-defineEmits<{
+const { form, errors, submit } = useSchemaForm(props.schema)
+
+const emits = defineEmits<{
     submitSuccess: [SchemaFormData]
 }>()
 
 const handleSubmit = () => {
-    // submit() du composable
+    submit((data) => {
+        emits('submitSuccess', data as SchemaFormData)
+    })
 }
 
 const getFieldComponent = (fieldType: FieldType) => {

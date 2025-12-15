@@ -9,7 +9,7 @@ const schema = {
     fields: [
         { name: "email", type: "text", label: "Email", rules: "required|email" },
         { name: "password", type: "text", label: "Password", rules: "required" }
-    ]
+    ] as const
 } 
 
 function login(data: { email: string, password: string }) {
