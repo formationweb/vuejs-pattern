@@ -1,6 +1,13 @@
 <template>
     <Opacity v-model="opacity" color="black" @change="console.log" />
-    <UserCard v-for="user in users" :key="user.id" :user @on-delete="deleteUser" />
+    <UserCard v-for="user in users" :key="user.id" :user @on-delete="deleteUser">
+        <template #error="{ error }">
+            <p>{{ error }}</p>
+        </template>
+        <template #empty>
+
+        </template>
+    </UserCard>
 </template>
 
 <script setup lang="ts">
